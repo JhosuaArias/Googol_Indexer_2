@@ -6,6 +6,7 @@ out
 *.iws
 *.iml
 venv
+wtds
 
 # Program's output
 *.wtd
