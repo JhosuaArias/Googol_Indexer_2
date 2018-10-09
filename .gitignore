@@ -1,0 +1,13 @@
+
+# Pycharm specific files/directories
+out
+.idea
+*.ipr
+*.iws
+*.iml
+venv
+
+# Program's output
+*.wtd
+Postings.txt
+Indice.txt
