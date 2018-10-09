@@ -35,6 +35,9 @@ def calculate_weights():
     path_read_file = "resources/toks"
     path_write_file = "resources/wtds"
 
+    if not os.path.exists(path_write_file):
+        os.makedirs(path_write_file)
+
     for filename_read in os.listdir(path_read_file):
         filename_write = filename_read.replace("tok", "wtd")
         file_write = open(path_write_file + "/" + filename_write, "w+", encoding="utf-8")
