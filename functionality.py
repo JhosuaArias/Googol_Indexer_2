@@ -53,7 +53,8 @@ def calculate_weights():
                 wtd_obj = dm.WtdData(tok_obj.term, weight)
                 write_lines.append(pad_string(wtd_obj.term, 31) + pad_string(str(wtd_obj.weight), 20) + "\n")
             file_write.writelines(write_lines)
-
+        file_read.close()
+        file_write.close()
 
 def post_term():
     pass
