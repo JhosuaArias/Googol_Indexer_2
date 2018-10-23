@@ -40,6 +40,7 @@ def calculate_weights():
 
     for filename_read in os.listdir(path_read_file):
         filename_write = filename_read.replace("tok", "wtd")
+        filename = filename_read.replace("tok","")
         file_write = open(path_write_file + "/" + filename_write, "w+", encoding="utf-8")
         file_read = open(path_read_file + "/" + filename_read, "r", encoding="utf-8")
         if file_read.mode == "r":
@@ -51,11 +52,26 @@ def calculate_weights():
                 vocabulary_obj = vocabulary.get(tok_obj.term)
                 weight = calculate_weight(tok_obj.normalize_freq, vocabulary_obj.inverse_freq)
                 wtd_obj = dm.WtdData(tok_obj.term, weight)
+                pst_obj = dm.PostData(tok_obj.term,filename,weight)
+                d[tok_obj.term] = pst_obj
                 write_lines.append(pad_string(wtd_obj.term, 31) + pad_string(str(wtd_obj.weight), 20) + "\n")
             file_write.writelines(write_lines)
         file_read.close()
         file_write.close()
 
+def write_postings():
+    path_write_file = "resources"
+    if not os.path.exists(path_write_file):
+        os.makedirs(path_write_file)
+    filename_write = "Postings.txt"
+    file_write = open(path_write_file + "/" + filename_write, "w+", encoding="utf-8")
+    write_lines = []
+    OrderedDict(sorted(d.items())) #se supone que esto deberia ordenarlo pero me di cuenta que esto ordena conforme se agregan pues
+    for term, info in d.items():
+        write_lines.append(pad_string(term, 31) + pad_string(info.url,31)+ pad_string(str(info.weight), 20) + "\n")
+    file_write.writelines(write_lines)
+    file_write.close()
+    
 def post_term():
     pass
 
@@ -67,6 +83,7 @@ def index_term():
 def main():
     create_vocabulary()
     calculate_weights()
+    write_postings()
 
 
 if __name__ == '__main__':
