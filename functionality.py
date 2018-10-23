@@ -1,9 +1,16 @@
 import data_model as dm
 import os
 import re
+from collections import OrderedDict
 
 # Global variables
 vocabulary = {}
+RESOURCES_PATH = "resources"
+TOKS_PATH = RESOURCES_PATH+"/toks"
+WTDS_PATH = RESOURCES_PATH+"/wtds"
+VOCABULARY_PATH = RESOURCES_PATH+"/Vocabulario.txt"
+POSTINGS_FILE = "Postings.txt"
+INDEX_FILE = "Indice.txt"
 
 
 # General Purpose
@@ -12,8 +19,7 @@ def calculate_weight(normalize_freq, inversed_freq):
 
 
 def create_vocabulary():
-    path = "resources/Vocabulario.txt"
-    file = open(path, "r", encoding="utf-8")
+    file = open(VOCABULARY_PATH, "r", encoding="utf-8")
     if file.mode == "r":
         contents = file.readlines()
         for line in contents:
@@ -22,27 +28,29 @@ def create_vocabulary():
             vocabulary.update({vocabulary_obj.term: vocabulary_obj})
 
 
+def get_term(line):
+    """Given a line where the first word is a term, returns that term.
+    Useful to get terms in files like Vocabulary, Postings, Index, etc."""
+    return line.split(" ")[0]
+
+
 def pad_string(string, padding):
     initial_length = len(string)
     for i in range(padding-initial_length):
         string += " "
     return string
 
+
 # Weights Files .wtd
-
-
 def calculate_weights():
-    path_read_file = "resources/toks"
-    path_write_file = "resources/wtds"
+    if not os.path.exists(WTDS_PATH):
+        os.makedirs(WTDS_PATH)
 
-    if not os.path.exists(path_write_file):
-        os.makedirs(path_write_file)
-
-    for filename_read in os.listdir(path_read_file):
+    for filename_read in os.listdir(TOKS_PATH):
         filename_write = filename_read.replace("tok", "wtd")
         filename = filename_read.replace("tok","")
-        file_write = open(path_write_file + "/" + filename_write, "w+", encoding="utf-8")
-        file_read = open(path_read_file + "/" + filename_read, "r", encoding="utf-8")
+        file_write = open(WTDS_PATH + "/" + filename_write, "w+", encoding="utf-8")
+        file_read = open(TOKS_PATH + "/" + filename_read, "r", encoding="utf-8")
         if file_read.mode == "r":
             contents = file_read.readlines()
             write_lines = []
@@ -53,27 +61,66 @@ def calculate_weights():
                 weight = calculate_weight(tok_obj.normalize_freq, vocabulary_obj.inverse_freq)
                 wtd_obj = dm.WtdData(tok_obj.term, weight)
                 pst_obj = dm.PostData(tok_obj.term,filename,weight)
-                d[tok_obj.term] = pst_obj
+                vocabulary[tok_obj.term] = pst_obj
                 write_lines.append(pad_string(wtd_obj.term, 31) + pad_string(str(wtd_obj.weight), 20) + "\n")
             file_write.writelines(write_lines)
         file_read.close()
         file_write.close()
 
+
 def write_postings():
-    path_write_file = "resources"
-    if not os.path.exists(path_write_file):
-        os.makedirs(path_write_file)
-    filename_write = "Postings.txt"
-    file_write = open(path_write_file + "/" + filename_write, "w+", encoding="utf-8")
+    if not os.path.exists(RESOURCES_PATH):
+        os.makedirs(RESOURCES_PATH)
+
+    file_write = open(RESOURCES_PATH + "/" + POSTINGS_FILE, "w+", encoding="utf-8")
     write_lines = []
-    OrderedDict(sorted(d.items())) #se supone que esto deberia ordenarlo pero me di cuenta que esto ordena conforme se agregan pues
-    for term, info in d.items():
+    OrderedDict(sorted(vocabulary.items())) #se supone que esto deberia ordenarlo pero me di cuenta que esto ordena conforme se agregan pues
+    for term, info in vocabulary.items():
         write_lines.append(pad_string(term, 31) + pad_string(info.url,31)+ pad_string(str(info.weight), 20) + "\n")
     file_write.writelines(write_lines)
     file_write.close()
-    
-def post_term():
-    pass
+
+
+def write_index():
+    if not os.path.exists(RESOURCES_PATH):
+        os.makedirs(RESOURCES_PATH)
+
+    # Save the data to be written in a buffer, to be written all at once at the end
+    index_file_lines = []
+
+    postings_file = open(RESOURCES_PATH + "/" + POSTINGS_FILE, "r", encoding="utf-8")
+    postings_lines = postings_file.readlines()
+
+    # Get the first term, in order to start comparing with the second term in the loop
+    current_term = get_term(postings_lines[0])
+    first_entry = 1
+    current_term_entries = 1
+
+    # Start in the second line because the term in the first line as already been read
+    for line_number in range(1, len(postings_lines)):
+        # Get the new line's term
+        new_line = postings_lines[line_number]
+        new_term = get_term(new_line)
+
+        if current_term == new_term:
+            # If it's the same as the current term, update its total entries
+            current_term_entries += 1
+        else:
+            # If it's a different term, write the appropriate line to the buffer
+            index_file_lines.append(pad_string(current_term, 31) + pad_string(str(first_entry), 13) +
+                                    pad_string(str(current_term_entries), 12)+"\n")
+
+            # And update the necessary variables
+            current_term = new_term
+            current_term_entries = 1
+            first_entry = line_number + 1  # Add one because the array posting_lines is 0-indexed
+
+    postings_file.close()
+
+    # Write all the lines saved in the buffer
+    index_file = open(RESOURCES_PATH + "/" + INDEX_FILE, "w+", encoding="utf-8")
+    index_file.writelines(index_file_lines)
+    index_file.close()
 
 
 def index_term():
@@ -84,6 +131,7 @@ def main():
     create_vocabulary()
     calculate_weights()
     write_postings()
+    write_index()
 
 
 if __name__ == '__main__':
