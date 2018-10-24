@@ -1,9 +1,13 @@
+import collections
+from collections import OrderedDict
+
 import data_model as dm
 import os
 import re
 
 # Global variables
 vocabulary = {}
+d = collections.OrderedDict()
 
 
 # General Purpose
