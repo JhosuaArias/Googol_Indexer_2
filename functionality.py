@@ -5,7 +5,7 @@ from collections import OrderedDict
 
 # Global variables
 vocabulary = {}
-d = collections.OrderedDict()
+postings_terms = OrderedDict()
 RESOURCES_PATH = "resources"
 TOKS_PATH = RESOURCES_PATH+"/toks"
 WTDS_PATH = RESOURCES_PATH+"/wtds"
@@ -62,7 +62,7 @@ def calculate_weights():
                 weight = calculate_weight(tok_obj.normalize_freq, vocabulary_obj.inverse_freq)
                 wtd_obj = dm.WtdData(tok_obj.term, weight)
                 pst_obj = dm.PostData(tok_obj.term,filename,weight)
-                d[tok_obj.term] = pst_obj
+                postings_terms[tok_obj.term] = pst_obj
                 write_lines.append(pad_string(wtd_obj.term, 31) + pad_string(str(wtd_obj.weight), 20) + "\n")
             file_write.writelines(write_lines)
         file_read.close()
@@ -75,9 +75,9 @@ def write_postings():
 
     file_write = open(RESOURCES_PATH + "/" + POSTINGS_FILE, "w+", encoding="utf-8")
     write_lines = []
-    OrderedDict(sorted(d.items())) #se supone que esto deberia ordenarlo pero me di cuenta que esto ordena conforme se agregan pues
-    for term, info in d.items():
-        write_lines.append(pad_string(term, 31) + pad_string(info.url,31)+ pad_string(str(info.weight), 20) + "\n")
+    OrderedDict(sorted(postings_terms.items())) #se supone que esto deberia ordenarlo pero me di cuenta que esto ordena conforme se agregan pues
+    for term, info in postings_terms.items():
+        write_lines.append(pad_string(term, 31) + pad_string(info.url,32)+ pad_string(str(info.weight), 20) + "\n")
     file_write.writelines(write_lines)
     file_write.close()
 
