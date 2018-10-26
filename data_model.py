@@ -6,9 +6,9 @@ class TokData:
 
 
 class VocabularyData:
-    def __init__(self, term, numDocuments, inverse_freq):
+    def __init__(self, term, num_documents, inverse_freq):
         self.term = term
-        self.numDocuments = numDocuments
+        self.num_documents = num_documents
         self.inverse_freq = inverse_freq
 
 
@@ -26,7 +26,7 @@ class PostData:
 
 
 class IndexData:
-    def __init__(self, term, initialPos, numEntries):
+    def __init__(self, term, initial_pos, num_entries):
         self.term = term
-        self.initialPos = initialPos
-        self.numEntries = numEntries
+        self.initial_pos = initial_pos
+        self.num_entries = num_entries
