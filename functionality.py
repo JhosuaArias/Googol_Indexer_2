@@ -124,10 +124,6 @@ def write_index():
     index_file.close()
 
 
-def index_term():
-    pass
-
-
 def main():
     create_vocabulary()
     calculate_weights()
