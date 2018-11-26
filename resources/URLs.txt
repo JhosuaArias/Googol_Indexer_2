@@ -384,6 +384,7 @@ tablaturasguitarra3.html http://www.lacuerda.net/
 tablaturasguitarra4.html http://www.tusacordes.com/
 tablaturasguitarra5.html https://lacuerda.net/
 tablaturasguitarra6.html http://www.aulaactual.com/especiales/vihuela/03e.htm
+tablaturasguitarra7.html http://www.geocities.com/sunsetstrip/palms/6797/tablaturas
 tablaturasguitarra8.html http://www.laplazavirtual.com/guitarra/index.htm
 tablaturasguitarra9.html http://www.guitarraonline.com.ar/links2.htm
 tablaturasguitarra10.html http://www.farhat.name/
@@ -403,6 +404,7 @@ origami3.html http://www.netverk.com.ar/~halgall/origami3.htm#El%20plegado%20y%2
 origami4.html http://www.netverk.com.ar/~halgall/origami4.htm#Aprendiendo%20las%20Bases
 origami5.html http://www.netverk.com.ar/~halgall/origami6.htm#Papiroflexia
 origami6.html http://www.netverk.com.ar/~halgall/origami8.htm#algunos%20links%20a
+origami7.html http://design.origami.free.fr/indexspanish.htm
 origami8.html http://www.uaq.mx/matematicas/origami/
 origami9.html http://www.uaq.mx/matematicas/origami/taller1
 origami10.html http://www.uaq.mx/matematicas/origami/galeria1
